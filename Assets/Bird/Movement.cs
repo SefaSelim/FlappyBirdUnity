@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
+
+    public AudioClip WooshSound;
     public AudioClip CoinSound;
     public AudioClip DeathSound;
     public AudioSource audioSource;
@@ -45,10 +47,9 @@ public class Movement : MonoBehaviour
     }
 
 
-
-        
-        if(Input.GetMouseButtonDown(0))
+        if(Input.GetMouseButtonDown(0)&&!isDead)
         {
+            audioSource.PlayOneShot(WooshSound,0.1f);
             bird.velocity = Vector2.up * jumpHeight;
             animator.SetBool("IsFlapping",true);
             timer = 0;
@@ -77,11 +78,11 @@ public class Movement : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.tag == "DeathArea")
         {
+            audioSource.PlayOneShot(DeathSound,1.5f);
             isDead = true;
             Time.timeScale = 0;
             DeathScreen.SetActive(true);
             forOnce = false;
-            audioSource.PlayOneShot(DeathSound,1.5f);
         }
     }
 

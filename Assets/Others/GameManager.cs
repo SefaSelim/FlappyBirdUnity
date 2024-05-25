@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public AudioSource audioSource;
+    public GameObject MusicOff;
+    public GameObject MusicOn;
     public int score;
     public Text scoreText;
     // Start is called before the first frame update
@@ -13,6 +16,8 @@ public class GameManager : MonoBehaviour
     {
         score = 0;
         scoreText.text = score.ToString();
+        audioSource.Play();
+
     }
 
     // Update is called once per frame
@@ -30,6 +35,22 @@ public class GameManager : MonoBehaviour
     public void restartGame()
     {
         SceneManager.LoadScene("SampleScene");
+    }
+
+    public void musicOn()
+    {
+        MusicOff.SetActive(true);
+        MusicOn.SetActive(false);
+        audioSource.UnPause();
+
+    }
+
+    public void musicOff()
+    {
+        MusicOff.SetActive(false);
+        MusicOn.SetActive(true);
+        audioSource.Pause();
+
     }
 
 
