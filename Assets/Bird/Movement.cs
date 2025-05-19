@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Movement : MonoBehaviour
 {
+    [SerializeField] GameObject Taptap;
+
+    private float Intensity = 0.1f;
 
     public AudioClip WooshSound;
     public AudioClip CoinSound;
@@ -29,11 +33,24 @@ public class Movement : MonoBehaviour
     {
         bird = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        Time.timeScale = 0;
+        StaticSettings.isGameFreezed = true;
     }
 
     void Update()
     {
+        audioSource.volume = StaticSettings.SoundValue;
+
+
+        if (StaticSettings.isGameFreezed)
+        {
+            bird.gravityScale = 0;
+            bird.velocity = Vector2.zero;
+        }
+        else if (!StaticSettings.isGameFreezed)
+        {
+            bird.gravityScale = 1;   
+        }
+
 
         timer += Time.deltaTime;
 
@@ -47,17 +64,30 @@ public class Movement : MonoBehaviour
     }
 
 
-        if(Input.GetMouseButtonDown(0)&&!isDead)
+        if(Input.GetMouseButtonDown(0)&&!isDead&&!EventSystem.current.IsPointerOverGameObject())
         {
+            if (Taptap.activeSelf)
+            {
+                Taptap.SetActive(false);
+            }
+
+            if (!forOnce && !isDead)
+            {
+                StaticSettings.isGameFreezed = false;
+                forOnce = true;
+            }
+
+
+            Intensity = (float)StaticSettings.CurrentScore / 1000;
+            ScreenShake.Instance.Shake(StaticSettings.CurrentScore / 50, Intensity);
+
+
+
             audioSource.PlayOneShot(WooshSound,0.1f);
             bird.velocity = Vector2.up * jumpHeight;
             animator.SetBool("IsFlapping",true);
             timer = 0;
-            if (!forOnce&&!isDead)
-            {
-                Time.timeScale = 1;
-                forOnce = true;
-            }
+
         }
         else if(timer>0.4)
         {
@@ -78,9 +108,10 @@ public class Movement : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.tag == "DeathArea")
         {
+            ScreenShake.Instance.Shake(3, .5f);
+
             audioSource.PlayOneShot(DeathSound,1.5f);
             isDead = true;
-            Time.timeScale = 0;
             DeathScreen.SetActive(true);
             forOnce = false;
         }

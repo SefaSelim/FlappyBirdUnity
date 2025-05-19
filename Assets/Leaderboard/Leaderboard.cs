@@ -15,8 +15,8 @@ private List<TextMeshProUGUI> names;
 [SerializeField]
 private List<TextMeshProUGUI> scores;
 
-private string publicLeaderboardKey = 
-"9785bf52c5fbb7fa144d4612d3121e5474bb6bd5af2390cc6d092fc3b200ea3d";
+private string publicLeaderboardKey =
+"3f7661280f10ccf8ad37cbe9452740a29b04f3cf20aee5cbf6c60b4f00338a17";
 
 private void Start() {
     GetLeaderboard();
@@ -27,28 +27,21 @@ private void Start() {
 public void GetLeaderboard()
 {
     LeaderboardCreator.GetLeaderboard(publicLeaderboardKey,((msg) => {
-        names[0].text = msg[0].Username;
-        scores[0].text = msg[0].Score.ToString();
+        int loopLength = (msg.Length < names.Count) ? msg.Length : names.Count;
+        for (int i = 0; i < loopLength; ++i)
+        {
+            names[i].text = msg[i].Username;
+            scores[i].text = msg[i].Score.ToString();
+        }
     }));
 }
 
 public void SetLeaderboardEntry(string username,int score)
 {
-
-x = Int32.Parse(scores[0].text);
-
-    if (x>score)
-    {
-        username = names[0].text;
-        score = Int32.Parse(scores[0].text);
-        
-    }
-
-
-    LeaderboardCreator.UploadNewEntry(publicLeaderboardKey,username,score,((msg)=>{
-        
+        LeaderboardCreator.UploadNewEntry(publicLeaderboardKey, username, score, ((msg) => { 
         GetLeaderboard();
-    }));
+        }));
+
 }
 
 

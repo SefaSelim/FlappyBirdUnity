@@ -28,9 +28,12 @@ public class Spawner : MonoBehaviour
        {
          yield return new WaitForSeconds(timeBetweenSpawn);
 
-         Instantiate(pipes,new Vector3(1.4f,UnityEngine.Random.Range(-heightGap+0.05f,heightGap+0.15f),0),quaternion.identity);
+            if (!StaticSettings.isGameFreezed)
+            {
+                Instantiate(pipes, new Vector3(transform.position.x, UnityEngine.Random.Range(-heightGap + 0.05f, heightGap + 0.15f), 0), quaternion.identity);
+            }
 
 
-       }
+        }
     }
 }

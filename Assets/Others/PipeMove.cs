@@ -8,12 +8,18 @@ public class PipeMove : MonoBehaviour
 public float speed;
     void Start()
     {
-        Destroy(gameObject,6f);
+        if (!StaticSettings.isGameFreezed)
+        {
+            Destroy(gameObject, 6f);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.position += Vector3.left*Time.deltaTime * speed;
+        if (!StaticSettings.isGameFreezed)
+        {
+            transform.position += Vector3.left * Time.deltaTime * speed;
+        }
     }
 }

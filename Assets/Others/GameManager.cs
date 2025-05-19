@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] TextMeshProUGUI Highscore;
+
+    public Animator ScoreAnimation;
+
     public AudioSource audioSource;
-    public GameObject MusicOff;
-    public GameObject MusicOn;
     public int score;
     public Text scoreText;
     // Start is called before the first frame update
@@ -20,38 +23,32 @@ public class GameManager : MonoBehaviour
 
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        audioSource.volume = StaticSettings.MusicSound / 2;
     }
 
     public void updateScore()
     {
         score++;
         scoreText.text = score.ToString();
+        ScoreAnimation.SetTrigger("Scoreup");
+        StaticSettings.CurrentScore = score;
+
+
+        if (score > StaticSettings.MaxScore)
+        {
+            StaticSettings.MaxScore = score;
+        }
+
     }
 
     public void restartGame()
     {
+        StaticSettings.isGameFreezed = true;
         SceneManager.LoadScene("SampleScene");
     }
 
-    public void musicOn()
-    {
-        MusicOff.SetActive(true);
-        MusicOn.SetActive(false);
-        audioSource.UnPause();
-
-    }
-
-    public void musicOff()
-    {
-        MusicOff.SetActive(false);
-        MusicOn.SetActive(true);
-        audioSource.Pause();
-
-    }
 
 
 
